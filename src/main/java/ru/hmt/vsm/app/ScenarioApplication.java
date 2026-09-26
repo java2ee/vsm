@@ -5,6 +5,7 @@ package ru.hmt.vsm.app;
 
 import ru.funsys.avalanche.Application;
 import ru.funsys.avalanche.sql.Adapter;
+import ru.hmt.vsm.model.Scenario;
 
 /**
  * 
@@ -13,21 +14,12 @@ public class ScenarioApplication extends Application {
 
 	private Adapter database;
 
-	private String selectScenario = "SELECT mnemo, title, path, upload_time, summary, created AS created FROM vsm.scenario WHERE path = ?";
-	
-    mnemo varchar(16) NOT NULL,
-    title varchar(128) NOT NULL,
-    icon bytea,
-    path varchar(256),
-    upload_time timestamp without time zone,
-    summary varchar(4096) NOT NULL,
-    created time without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated timestamp without time zone,
-    status varchar(1) DEFAULT 'D',
+	private String selectScenario = "SELECT mnemo, title, path, upload_time, summary, created updated, status WHERE mnemo = ?";
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
+		// Возможеое переопределение параметров в конфигурационном файле
+		selectScenario = getParameterValue("selectScenario", selectScenario);
 		
 	}
 
@@ -37,4 +29,21 @@ public class ScenarioApplication extends Application {
 		
 	}
 
+	/**
+	 * Получить описание сценария игры
+	 * 
+	 * @param mnemo мнемокод сценария
+	 * 
+	 * @return описание сценария или null, если сценарий не найден
+	 * 
+	 * @throws Exception
+	 */
+	public Scenario getScenario(String mnemo) throws Exception {
+		Scenario scenario = null;
+		Scenario[] scenarios = database.select(selectScenario, Scenario.class, mnemo);
+		if (scenarios.length == 1) {
+			scenario = scenarios[0]; 
+		}
+		return scenario;
+	}
 }
