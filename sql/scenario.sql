@@ -37,7 +37,7 @@ COMMENT ON COLUMN vsm.scenario.created
     IS 'Время создания сценария';    
 
 COMMENT ON COLUMN vsm.scenario.updated
-    IS 'Время измененмя сценария';    
+    IS 'Время изменения сценария';    
 
 COMMENT ON COLUMN vsm.scenario.status
     IS 'Статус сценария E (Enable), D (Disable)';    

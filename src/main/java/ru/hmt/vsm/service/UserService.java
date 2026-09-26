@@ -5,13 +5,18 @@ package ru.hmt.vsm.service;
 
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.util.HashMap;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.PostConstruct;
 import jakarta.inject.Singleton;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.WebApplicationException;
@@ -53,4 +58,22 @@ public class UserService extends RestService {
 		return null;
 	}
 
+	
+	@Operation(summary = "Загрузка данных любых данных их смежных систем",
+			responses = {
+            		@ApiResponse(responseCode = "204", description = "${http.204}"), 
+    				@ApiResponse(responseCode = "401", description = "${http.401}"),
+    				@ApiResponse(responseCode = "403", description = "${http.403}"),
+    				@ApiResponse(responseCode = "500", description = "${http.500}") })
+	@Path("/load")
+	@POST
+	public void loadData(HashMap<String, Object> map) {
+		// проанализировать корневые атрибуты принятых данных, по которым распознать тип принятых данных
+		
+		// создать экзепляр класса соответсвующий типу принятых данных и передать конструктору полученный экземпляр map
+		// для выбора только тредуемых атрибутов 
+		
+		// передать заполненный экзепляр класса для записи в БД
+		
+	}
 }
