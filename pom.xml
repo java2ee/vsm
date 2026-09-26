@@ -1,0 +1,72 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ru.hmt</groupId>
+  <artifactId>vsm</artifactId>
+  <version>1.0.0</version>
+  <packaging>war</packaging>
+  <description>Геймификация для ВСМ</description>
+
+  <properties>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+    <avalanche.version>3.0.0</avalanche.version>
+    <h2.version>2.4.240</h2.version>
+    <swagger-ui.version>5.17.11</swagger-ui.version>
+    <swagger-annotation.version>2.2.52</swagger-annotation.version>
+    <servlet-api.version>6.0.0</servlet-api.version>
+    <jersey.version>4.0.2</jersey.version>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>ru.funsys.avalanche</groupId>
+      <artifactId>avalanche-sql</artifactId>
+      <version>${avalanche.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ru.funsys.avalanche</groupId>
+      <artifactId>avalanche-rs</artifactId>
+      <version>${avalanche.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>${servlet-api.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-multipart</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.swagger.core.v3</groupId>
+      <artifactId>swagger-annotations</artifactId>
+      <version>${swagger-annotation.version}</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <finalName>vsm</finalName>
+    <sourceDirectory>src</sourceDirectory>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.13.0</version>
+        <configuration>
+          <release>17</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

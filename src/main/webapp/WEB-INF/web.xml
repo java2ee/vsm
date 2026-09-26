@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="https://jakarta.ee/xml/ns/jakartaee"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+	id="WebApp_ID" version="6.0">
+
+	<!--     
+		metadata-complete="true"
+		
+		<absolute-ordering />
+	-->
+
+
+	<display-name>REST</display-name>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.htm</welcome-file>
+		<welcome-file>default.html</welcome-file>
+		<welcome-file>default.jsp</welcome-file>
+		<welcome-file>default.htm</welcome-file>
+	</welcome-file-list>
+
+	<servlet>
+		<display-name>AvalancheServlet</display-name>
+		<servlet-name>AvalancheServlet</servlet-name>
+		<servlet-class>
+			ru.funsys.servlet.http.AvalancheServlet
+		</servlet-class>
+		<init-param>
+			<param-name>config</param-name>
+			<param-value>${contextPath}-config.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>log4j</param-name>
+			<param-value>${contextPath}-log4j.xml</param-value>
+		</init-param>
+		<init-param>
+			<param-name>avalanche.paths</param-name>
+			<param-value>
+				${jboss.server.config.dir};${catalina.base}/conf
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>avalanche.replacePathInfos</param-name>
+			<param-value>/service-base-uri.js:/rest-uri.js</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+		<multipart-config>
+			<max-file-size>52428800</max-file-size>
+			<max-request-size>52428800</max-request-size>
+			<file-size-threshold>0</file-size-threshold>
+		</multipart-config>
+	</servlet>
+
+	<servlet>
+        <servlet-name>jersey-serlvet</servlet-name>
+		<servlet-class>
+			org.glassfish.jersey.servlet.ServletContainer
+		</servlet-class>
+		<init-param>
+			<param-name>jakarta.ws.rs.Application</param-name>
+			<param-value>
+				ru.funsys.avalanche.rs.ResourceRegister
+			</param-value>
+		</init-param>
+
+		<!-- 
+			<init-param>
+			<param-name>jersey.config.server.provider.packages</param-name>
+			<param-value>ru.funsys.avalanche.rs.provider</param-value>
+			</init-param>
+			<init-param>
+			<param-name>jersey.config.server.provider.classnames</param-name>
+			<param-value>org.glassfish.jersey.media.multipart.MultiPartFeature</param-value>
+			</init-param>
+			<init-param>
+			<param-name>timestamp.format</param-name>
+			<param-value>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</param-value>
+			</init-param> 
+		-->
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+    <servlet>
+         <servlet-name>binarySerlvet</servlet-name>
+         <servlet-class>ru.hmt.vsm.http.BinaryResource</servlet-class>
+     </servlet>
+
+	<servlet-mapping>
+		<servlet-name>jersey-serlvet</servlet-name>
+		<url-pattern>/api/v1/*</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>binarySerlvet</servlet-name>
+		<url-pattern>/icon/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- Удалить комментарий ниже при настройке прав доступа к REST сервисам -->
+
+	<security-constraint>
+		<web-resource-collection>
+		<web-resource-name>Public resources</web-resource-name>
+		<url-pattern>/api/v1/login</url-pattern>
+		<url-pattern>/api/v1/logout</url-pattern>
+		<url-pattern>/api/v1/openapi.json</url-pattern>
+		<url-pattern>/icon/*</url-pattern>
+		<url-pattern>/swagger-ui/*</url-pattern>
+		</web-resource-collection>
+	</security-constraint>  
+
+    <security-constraint>
+      <web-resource-collection>
+		<web-resource-name>REST API и другие ресурсы</web-resource-name>
+		<url-pattern>/api/v1/user</url-pattern>
+		<url-pattern>/api/v1/user/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+		<role-name>conductor</role-name>
+		<role-name>examiner</role-name>
+      </auth-constraint>
+	</security-constraint>
+
+    <security-constraint>
+      <web-resource-collection>
+		<web-resource-name>REST API ведения БД</web-resource-name>
+		<url-pattern>/api/v1/binary/*</url-pattern>
+      </web-resource-collection>
+      <auth-constraint>
+		<role-name>admin</role-name>
+      </auth-constraint>
+	</security-constraint>
+
+	<security-role>
+	  <description>
+		Роль доступа к REST сервисам смежных систем
+	  </description>
+	  <role-name>task</role-name>
+	</security-role>
+
+	<security-role>
+	  <description>
+		Роль доступа проводников вагона
+	  </description>
+	  <role-name>conductor</role-name>
+	</security-role>
+
+	<security-role>
+	  <description>
+		Роль доступа экзаменатора проводников вагона
+	  </description>
+	  <role-name>examiner</role-name>
+	</security-role>
+
+	<security-role>
+	  <description>
+		Роль доступа администратора системы
+	  </description>
+	  <role-name>admin</role-name>
+	</security-role>
+
+	<login-config>
+		<auth-method>FORM</auth-method>
+	</login-config>
+
+</web-app>

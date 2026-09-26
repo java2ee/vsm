@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<avalanche name="sc 1.0.0"
+           buildInfo="ru.hmt.vsm.BuildInfo.properties"
+           version="1.0.0"
+           description="Имитационная модель сортировочного центра"> 
+
+	<!-- Определение файлов локализации приложения                                               -->
+	<locale name="ru.hmt.vsm.LocaleStrings" />
+
+	<!-- Сервисные функции работы с БД, источник данных БД определяется в конфигурации           -->
+	<!-- контекста WEB приложение (для Tomcat см. вложенный элемент <Resource> секции <context>) -->
+	<application class="ru.funsys.avalanche.sql.Database" name="vsm" description="Функция доступа к БД"
+	             resource="java:/comp/env/jdbc/vsm" function="true">
+	</application>          
+	
+	<application class="ru.hmt.vsm.app.UserApplication" name="user" description="Управления сотрудниками" >
+	             
+		<adapter class="ru.funsys.avalanche.sql.Adapter" name="database" uri="vsm" />
+		
+	</application>          
+
+	<application class="ru.hmt.vsm.app.BinaryApplication" name="binary" description="Управление бинарными данными" >
+	             
+		<adapter class="ru.funsys.avalanche.sql.Adapter" name="database" uri="vsm" />
+		
+	</application>          
+
+	<application class="ru.hmt.vsm.app.H2ConsoleServer" name="console" description="WEB консоль управления H2" />
+
+	<application class="ru.funsys.avalanche.rs.SwaggerApplication" name="swagger-ui"
+	             description="Конфигурационные параметры WEB интерфейса SwaggerUI">
+		
+		<parameter name="api.title" value="REST API" />
+
+		<parameter name="api.version" value="1.0.0" />
+
+		<parameter name="api.description" value="Геймификация для ВСМ" />
+
+		<parameter name="api.wadl" value="true" 
+		           desciption="Добавляет в интерфейсе SwaggerUI ссылку на application.wadl (true/false)" />
+
+		<parameter name="server.uri" value="." />
+
+		<parameter name="server.description" value="Сервер приложения геймификация для ВСМ" />
+
+		<parameter name="/swagger-initializer.js" 
+		           desciption="Переопределеят конфигурацию SwaggerUI по умолчанию">
+window.onload = function() {
+
+  const OPENAPI = "/api/v1"; // значение должно соответствовать значению параметра url-pattern сервлета Jersey
+   
+  // the following lines will be replaced by docker/configurator, when it runs in a docker-container
+  window.ui = SwaggerUIBundle({
+    url: ".." + OPENAPI + "/openapi.json",
+    dom_id: '#swagger-ui',
+    deepLinking: true,
+    presets: [
+      SwaggerUIBundle.presets.apis,
+      SwaggerUIStandalonePreset
+    ],
+    plugins: [
+      SwaggerUIBundle.plugins.DownloadUrl
+    ],
+    layout: "StandaloneLayout"
+  });
+
+};
+		</parameter>
+
+	</application>         
+	 
+</avalanche>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Требование к разработке WEB клиента</title>
+<style>
+table {
+  width: 100%;
+  border-collapse: collapse; /* Схлопывает двойные границы ячеек */
+  font-family: sans-serif;
+}
+
+th, td {
+  border: 1px solid #dddddd; /* Рамка ячеек */
+  text-align: left;
+  padding: 10px; /* Внутренние отступы */
+}
+
+thead th {
+  background-color: #f4f4f4; /* Цвет фона шапки */
+}
+
+/* Подсветка четных строк */
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+</style>
+</head>
+<body>
+<h1>Требование к разработке WEB клиента</h1>
+
+<p>
+Этот документ описывает общие требования разработки WEB клиента.
+</p>
+
+<h2>1. URL приложения</h2>
+
+<p>
+Приложение может быть опубликовано как в корневом контексте сервера, так и иметь свое собственное имя контекст. Имя контекст, по сути,
+явлется именем приложения. На одном WEB сервере может эсплуатироваться множество различных приложений, каждое в своем контексте. На одном
+WEB серевре может быть запущено множество копий одного и того же приложения в разных контекстах (с разными именами).  
+</p>
+
+<p>
+Примеры URL ROOT контекста 
+</p>
+<pre>
+http://hmt.funsys.ru:8080/
+https://hmt.funsys.ru:8443/
+</pre>
+
+<p>
+Примеры URL при собственном имени контекста, имя контекста <b>vsm</b>
+</p>
+<pre>
+http://hmt.funsys.ru/vsm/
+https://hmt.funsys.ru/vsm/
+</pre>
+
+<h2>2. Оносительные пути</h2>
+
+<p>
+Все пути статических и динамических ресурсов WEB клиента должны быть только относительными. Путь ресурса должен строиться относительно
+индексной страницы <b>index.html</b>
+</p>
+
+<table>
+  <caption>Примеры</caption>
+  <thead>
+<tr><th>Полный URL</th><th>Относительный URI</th></tr>
+  </thead>
+  <tbody>
+<tr><td>https://hmt.funsys.ru/vsm/index.html</td><td>index.html</td></tr>
+<tr><td>https://hmt.funsys.ru/vsm/api/v1/list</td><td>api/v1/list</td></tr>
+<tr><td>https://hmt.funsys.ru/vsm/swagger-ui/index.html</td><td>swagger-ui/index.html</td></tr>
+  </tbody>
+</table>
+
+
+<p>
+В среде разработки (IDE) WEB клиента, например в Visual Studio Code, существует возможность в конфигурации проекта задать имя контекста приложения
+и настроить параметры прокси сервра для доступа к внешнему серверу приложений.
+</p>
+
+<p>
+Пример настройки проекта WEB клиента на основе JavaScript-фреймворка VUE (фрагмент).
+</p>
+
+<pre>
+...
+
+export default defineConfig({
+  base: '',
+
+  ...
+
+ server: {
+    port: 5174,
+    proxy: {
+      '/rest': {
+        target: 'http://localhost:8080/', // The address and port of your backend server
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/rest/, '/backend/rest'), // Optional path rewrite
+      }, 
+    }
+  }
+})
+
+...
+</pre>
+
+<p>
+Если фреймворк WEB клиента не имеет подобных настроек, то можно воспользоваться внешним сервером Nginx.
+</p>
+
+<h2>3. конфигурационные параметры WEB клиента</h2>
+
+<p>
+Если при реализации WEB клиента требуется наличие каких либо конфигурационных параметров, то они должны прописываться в конфигурационным файле 
+сервера приложений и запрашиваться WEB клиентом через API сервера. 
+</p>
+
+<h2>4. Сборка приложения</h2>
+
+<p>
+Сервер (backend) и WEB клиент (frontend) при сборке компануются в один файл приложения (WAR, EAR) и в дальнейшем запускаются под упралением любого
+WEB сервера спецификации Java 2 EE. 
+</p>
+
+</body>
+</html>

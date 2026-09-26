@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd" >
+<properties version="1.0">
+  <comment>Сообщения приложения геймификации ВСМ</comment>
+  
+  <entry key="VSM0001E">Запись пользователя {0} не найдена</entry>
+  <entry key="VSM0002E">Ошибка выбора записи пользователя: {0}</entry>
+  <entry key="VSM0003E">Ошибка аунтефикации пользователя: {0}</entry>
+  <entry key="VSM0004E">Пользователь не авторизован</entry>
+
+
+  <entry key="auth.description">Аутентификация пользователя</entry>
+  <entry key="user.description">Управление пользователями</entry>
+  <entry key="user.current">Данне текущего пользоватедя</entry>
+  <entry key="auth.login">Выполнить аутентификацию пользователя</entry>
+  <entry key="auth.loginParameter">Табельный номер, телефон или почтовый адрес</entry>
+  <entry key="auth.passwordParameter">Пароль</entry>
+
+  <entry key="binary.descrioption">Обработка бинарных данных</entry>
+  <entry key="binary.uploadFile">Файл</entry>
+  
+  <entry key="scenario.description">Сненарий игры</entry>
+  
+  <entry key="http.200">Успешно</entry>
+  <entry key="http.204">Успешно</entry>
+  <entry key="http.401">Ошибка в данных аутентификации пользователя</entry>
+  <entry key="http.403">Нет пра доступа к ресурсу</entry>
+  <entry key="http.404">Ресур не найден</entry>
+  <entry key="http.500">Ошибка сервера</entry>
+
+</properties>
