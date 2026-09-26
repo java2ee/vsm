@@ -16,10 +16,14 @@
   <entry key="auth.loginParameter">Табельный номер, телефон или почтовый адрес</entry>
   <entry key="auth.passwordParameter">Пароль</entry>
 
-  <entry key="binary.descrioption">Обработка бинарных данных</entry>
+  <entry key="binary.description">Обработка бинарных данных</entry>
   <entry key="binary.uploadFile">Файл</entry>
-  
+  <entry key="binary.save">Сохранить иконку игрового сценария, возвращается относительная ссылка на сохранненый ресурс</entry>
+  <entry key="binary.delete">Удалить иконку игрового сценария</entry>
+
   <entry key="scenario.description">Сненарий игры</entry>
+  <entry key="scenario.getScenario">Получить игровой сценарий</entry>
+  <entry key="scenario.getScenarios">Получить список игровых сценариев</entry>
   
   <entry key="http.200">Успешно</entry>
   <entry key="http.204">Успешно</entry>

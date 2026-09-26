@@ -25,6 +25,12 @@
 		
 	</application>          
 
+	<application class="ru.hmt.vsm.app.ScenarioApplication" name="scenario" description="Управление ировыми сценариями" >
+	             
+		<adapter class="ru.funsys.avalanche.sql.Adapter" name="database" uri="vsm" />
+		
+	</application>          
+
 	<application class="ru.hmt.vsm.app.H2ConsoleServer" name="console" description="WEB консоль управления H2" />
 
 	<application class="ru.funsys.avalanche.rs.SwaggerApplication" name="swagger-ui"

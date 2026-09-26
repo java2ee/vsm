@@ -3,10 +3,12 @@
  */
 package ru.hmt.vsm.service;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.inject.Singleton;
 import jakarta.ws.rs.BeanParam;
@@ -23,12 +25,17 @@ import ru.hmt.vsm.app.BinaryApplication;
 import ru.hmt.vsm.model.UploadFile;
 
 @Path("/binary")
-@Tag(name = "binary", description = "${binary.descrioption}")
+@Tag(name = "binary", description = "${binary.description}")
 @Singleton
 public class BinaryService extends RestService {
 
 	private BinaryApplication app;
 	
+	@Operation(summary = "${binary.save}",
+			responses = {
+            		@ApiResponse(responseCode = "200", description = "${http.200}"), 
+    				@ApiResponse(responseCode = "403", description = "${http.403}"),
+    				@ApiResponse(responseCode = "500", description = "${http.500}") })
 	@POST
     @Path("/scenario/{mnemo}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -42,6 +49,11 @@ public class BinaryService extends RestService {
 		}
     }
 
+	@Operation(summary = "${binary.delete}",
+			responses = {
+            		@ApiResponse(responseCode = "204", description = "${http.204}"), 
+    				@ApiResponse(responseCode = "403", description = "${http.403}"),
+    				@ApiResponse(responseCode = "500", description = "${http.500}") })
 	@DELETE
     @Path("/scenario/{mnemo}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)

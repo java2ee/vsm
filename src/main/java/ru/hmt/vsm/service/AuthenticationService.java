@@ -24,7 +24,7 @@ import ru.hmt.vsm.app.UserApplication;
  * 
  */
 @Path("")
-@Tag(name = "authentication", description = "${auth.descrioption}")
+@Tag(name = "authentication", description = "${auth.description}")
 @Singleton
 public class AuthenticationService extends RestService {
 
