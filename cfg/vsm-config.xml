@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<avalanche name="sc 1.0.0"
+<avalanche name="VSM"
            buildInfo="ru.hmt.vsm.BuildInfo.properties"
            version="1.0.0"
-           description="Имитационная модель сортировочного центра"> 
+           description="Приложение геймификации для ВСМ"> 
 
 	<!-- Определение файлов локализации приложения                                               -->
 	<locale name="ru.hmt.vsm.LocaleStrings" />
