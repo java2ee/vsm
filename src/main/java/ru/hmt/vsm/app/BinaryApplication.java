@@ -112,6 +112,7 @@ public class BinaryApplication extends Application {
     
     public List<String> loadData(Map<String, Object> map) throws Exception {
     	List<String> tables = new ArrayList<>(); // список таблиц должен быть в обратном порядке их создания
+    	tables.add("next");
     	tables.add("node");
     	tables.add("run");
     	tables.add("setflag");
@@ -216,6 +217,18 @@ public class BinaryApplication extends Application {
     			+ "            ON DELETE NO ACTION)";
     	String insertNode = "INSERT INTO vsm.node VALUES (?, ?, ?)";
     	
+    	String createNext = "CREATE TABLE vsm.next (\r\n"
+    			+ "    rn_id character varying(32) NOT NULL,\r\n"
+    			+ "    nd_id character varying(32) NOT NULL,\r\n"
+    			+ "    choice character varying(32) NOT NULL,\r\n"
+    			+ "    next character varying(32),\r\n"
+				+ "    CONSTRAINT next_pk PRIMARY KEY (rn_id, nd_id, choice),"
+    			+ "    CONSTRAINT next_node_fk FOREIGN KEY (rn_id, nd_id)\r\n"
+    			+ "            REFERENCES vsm.node (rn_id, id)\r\n"
+    			+ "            ON UPDATE NO ACTION\r\n"
+    			+ "            ON DELETE NO ACTION)";
+    	String insertNext = "INSERT INTO vsm.next VALUES (?, ?, ?, ?)";
+    	
     	
     	Map<String, Object> timer = (Map) map.get("timer");
 		List<Object> audioAssets = (List) map.get("audioAssets");
@@ -234,6 +247,7 @@ public class BinaryApplication extends Application {
 		database.execute(createSetflag);
 		database.execute(createRun);
 		database.execute(createNode);
+		database.execute(createNext);
 
 		blockTemplates.forEach(block -> {
 			try {
@@ -309,6 +323,18 @@ public class BinaryApplication extends Application {
 							if (exception.get() == null) {
 								try {
 									database.execute(insertNode, run.get("id"), node.get("id"), node.get("template"));
+									
+									Map<String, String> nexts = (Map<String, String>) node.get("next");
+									nexts.forEach((key, value) -> {
+										if (exception.get() == null) {
+											try {
+												database.execute(insertNext, run.get("id"), node.get("id"), key, value);
+											} catch (Exception e) {
+												exception.set(e);
+												logger.error(e);
+											}
+										}
+									});
 								} catch (Exception e) {
 									exception.set(e);
 									logger.error(e);
