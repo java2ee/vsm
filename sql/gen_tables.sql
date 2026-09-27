@@ -9,6 +9,9 @@ CREATE TABLE vsm.block (
     timetext character varying(4094),
     dloyalty integer,
     dsafety integer,
+	icon bytea,
+	path varchar(256),
+	upload_time timestamp without time zone,
     CONSTRAINT block_pk PRIMARY KEY (id)
 );
 
@@ -66,6 +69,9 @@ CREATE TABLE vsm.run (
     submission boolean DEFAULT false,
     jurypool boolean DEFAULT false,
     startnode character varying(32),
+	icon bytea,
+	path varchar(256),
+	upload_time timestamp without time zone,
     CONSTRAINT run_pk PRIMARY KEY (id)
 );
 
