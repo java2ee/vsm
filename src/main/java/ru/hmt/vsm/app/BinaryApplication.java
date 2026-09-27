@@ -33,13 +33,127 @@ public class BinaryApplication extends Application {
 
 	private String selectScenarioIcon = "SELECT path, icon AS data, upload_time AS created FROM vsm.scenario WHERE path = ?";
 	
+	private String createBlock = "CREATE TABLE vsm.block (\r\n"
+			+ "    id character varying(32) NOT NULL,\r\n"
+			+ "    title character varying(32),\r\n"
+			+ "    type character varying(32),\r\n"
+			+ "    timelimitsec integer,\r\n"
+			+ "    text character varying(4094),\r\n"
+			+ "    timetext character varying(4094),\r\n"
+			+ "    dloyalty integer,\r\n"
+			+ "    dsafety integer,\r\n"
+			+ "    icon bytea,\r\n"
+			+ "    path varchar(256),\r\n"
+			+ "    upload_time timestamp without time zone,\r\n"
+			+ "    CONSTRAINT block_pk PRIMARY KEY (id))";
+	private String insertBlock = "INSERT INTO vsm.block (id, title, type, timelimitsec, text, timetext, dloyalty, dsafety) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+	private String createBlSetflag = "CREATE TABLE vsm.bl_setflag (\r\n"
+			+ "    bl_id character varying(32) NOT NULL,\r\n"
+			+ "    flag character varying(32) NOT NULL,\r\n"
+			+ "    CONSTRAINT bl_setflag_pk PRIMARY KEY (bl_id, flag),\r\n"
+			+ "    CONSTRAINT bl_setflag_block_fk FOREIGN KEY (bl_id)\r\n"
+			+ "            REFERENCES vsm.block (id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+	private String insertBlSetflag = "INSERT INTO vsm.bl_setflag VALUES (?, ?)";
+
+	
+	private String createAudioTimeLine = "CREATE TABLE vsm.audiotimeline (\r\n"
+			+ "    bl_id character varying(32) NOT NULL,\r\n"
+			+ "    assetid character varying(32) NOT NULL,\r\n"
+			+ "    offsetms integer,\r\n"
+			+ "    volume number(4,2),\r\n"
+			+ "    loop boolean DEFAULT false,\r\n"
+			+ "    stop character varying(32),\r\n"
+			+ "    CONSTRAINT audiotimeline_pk PRIMARY KEY (bl_id, assetid),\r\n"
+			+ "    CONSTRAINT audiotimeline_block_fk FOREIGN KEY (bl_id)\r\n"
+			+ "            REFERENCES vsm.block (id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+	private String insertAudioTimeLine = "INSERT INTO vsm.audiotimeline VALUES (?, ?, ?, ?, ?, ?)";
+	
+
+	private String createChoice = "CREATE TABLE vsm.choice (\r\n"
+			+ "    bl_id character varying(32) NOT NULL,\r\n"
+			+ "    id character varying(32) NOT NULL,\r\n"
+			+ "    text character varying(1024),\r\n"
+			+ "    dloyalty integer,\r\n"
+			+ "    dsafery integer,\r\n"
+			+ "    CONSTRAINT choice_pk PRIMARY KEY (bl_id, id),\r\n"
+			+ "    CONSTRAINT choice_block_fk FOREIGN KEY (bl_id)\r\n"
+			+ "            REFERENCES vsm.block (id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+			
+	private String insertChoice = "INSERT INTO vsm.choice VALUES (?, ?, ?, ?, ?)";
+	
+	private String createSetflag = "CREATE TABLE vsm.setflag (\r\n"
+			+ "    bl_id character varying(32) NOT NULL,\r\n"
+			+ "    ch_id character varying(32) NOT NULL,\r\n"
+			+ "    flag character varying(32) NOT NULL,\r\n"
+			+ "    CONSTRAINT setflag_pk PRIMARY KEY (bl_id, ch_id, flag),\r\n"
+			+ "    CONSTRAINT setflag_choice_fk FOREIGN KEY (bl_id, ch_id)\r\n"
+			+ "            REFERENCES vsm.choice (bl_id, id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+	private String insertSetflag = "INSERT INTO vsm.setflag VALUES (?, ?, ?)";
+
+	private String createRun = "CREATE TABLE vsm.run (\r\n"
+			+ "    id character varying(32) NOT NULL,\r\n"
+			+ "    title character varying(32) NOT NULL,\r\n"
+			+ "    submission boolean DEFAULT false,\r\n"
+			+ "    jurypool boolean DEFAULT false,\r\n"
+			+ "    startnode character varying(32),\r\n"
+			+ "    icon bytea,\r\n"
+			+ "    path varchar(256),\r\n"
+			+ "    upload_time timestamp without time zone,\r\n"
+			+ "    CONSTRAINT run_pk PRIMARY KEY (id))";
+	private String insertRun = "INSERT INTO vsm.run (id, title, submission, jurypool, startnode) VALUES (?, ?, ?, ?, ?)";
+
+	private String createNode = "CREATE TABLE vsm.node (\r\n"
+			+ "    rn_id character varying(32) NOT NULL,\r\n"
+			+ "    id character varying(32) NOT NULL,\r\n"
+			+ "    template character varying(32) NOT NULL,\r\n"
+			+ "    CONSTRAINT node_pk PRIMARY KEY (rn_id, id),"
+			+ "    CONSTRAINT node_run_fk FOREIGN KEY (rn_id)\r\n"
+			+ "            REFERENCES vsm.run (id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+	private String insertNode = "INSERT INTO vsm.node VALUES (?, ?, ?)";
+	
+	private String createNext = "CREATE TABLE vsm.next (\r\n"
+			+ "    rn_id character varying(32) NOT NULL,\r\n"
+			+ "    nd_id character varying(32) NOT NULL,\r\n"
+			+ "    choice character varying(32) NOT NULL,\r\n"
+			+ "    next character varying(32),\r\n"
+			+ "    CONSTRAINT next_pk PRIMARY KEY (rn_id, nd_id, choice),"
+			+ "    CONSTRAINT next_node_fk FOREIGN KEY (rn_id, nd_id)\r\n"
+			+ "            REFERENCES vsm.node (rn_id, id)\r\n"
+			+ "            ON UPDATE NO ACTION\r\n"
+			+ "            ON DELETE NO ACTION)";
+	private String insertNext = "INSERT INTO vsm.next VALUES (?, ?, ?, ?)";
 
 	@Override
 	public void init() {
+		// При необходимости можно переопределить в конфигурации
 		prefixScenarioIcon = getParameterValue("prefixScenarioIcon", prefixScenarioIcon);
 		updateScenarioIcon = getParameterValue("updateScenarioIcon", updateScenarioIcon);
 		selectScenarioIcon = getParameterValue("selectScenarioIcon", selectScenarioIcon);
-
+		createBlock = getParameterValue("createBlock", createBlock);
+		insertBlock = getParameterValue("insertBlock", insertBlock);
+		createBlSetflag = getParameterValue("createBlSetflag", createBlSetflag);
+		insertBlSetflag = getParameterValue("insertBlSetflag", insertBlSetflag);
+		createAudioTimeLine = getParameterValue("createAudioTimeLine", createAudioTimeLine);
+		insertAudioTimeLine = getParameterValue("insertAudioTimeLine", insertAudioTimeLine);
+		createChoice = getParameterValue("createChoice", createChoice);
+		insertChoice = getParameterValue("insertChoice", insertChoice);
+		createRun = getParameterValue("createChoice", createChoice);
+		insertRun = getParameterValue("insertChoice", insertChoice);
+		createNode = getParameterValue("createNode", createNode);
+		insertNode = getParameterValue("insertNode", insertNode);
+		createNext = getParameterValue("createNext", createNext);
+		insertNext = getParameterValue("insertNext", insertNext);
 	}
 
 	@Override
@@ -110,6 +224,14 @@ public class BinaryApplication extends Application {
     	return list;
     }
     
+    /**
+     * Загрузка описания игровых сценариев в БД
+     * 
+     * @param map структура данных, сформированная на основании полученного JSON  
+     * @return список таблиц.
+     * 
+     * @throws Exception 
+     */
     public List<String> loadData(Map<String, Object> map) throws Exception {
     	List<String> tables = new ArrayList<>(); // список таблиц должен быть в обратном порядке их создания
     	tables.add("next");
@@ -133,101 +255,6 @@ public class BinaryApplication extends Application {
 			}
     	});
 		if (exception.get() != null) throw exception.get(); 
-    	
-    	String createBlock = "CREATE TABLE vsm.block (\r\n"
-    			+ "    id character varying(32) NOT NULL,\r\n"
-    			+ "    title character varying(32),\r\n"
-    			+ "    type character varying(32),\r\n"
-    			+ "    timelimitsec integer,\r\n"
-    			+ "    text character varying(4094),\r\n"
-    			+ "    timetext character varying(4094),\r\n"
-    			+ "    dloyalty integer,\r\n"
-    			+ "    dsafety integer,\r\n"
-    			+ "    CONSTRAINT block_pk PRIMARY KEY (id))";
-    	String insertBlock = "INSERT INTO vsm.block VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-    	String createBlSetflag = "CREATE TABLE vsm.bl_setflag (\r\n"
-    			+ "    bl_id character varying(32) NOT NULL,\r\n"
-    			+ "    flag character varying(32) NOT NULL,\r\n"
-				+ "    CONSTRAINT bl_setflag_pk PRIMARY KEY (bl_id, flag),\r\n"
-    			+ "    CONSTRAINT bl_setflag_block_fk FOREIGN KEY (bl_id)\r\n"
-    			+ "            REFERENCES vsm.block (id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    	String insertBlSetflag = "INSERT INTO vsm.bl_setflag VALUES (?, ?)";
-
-    	
-    	String createAudioTimeLine = "CREATE TABLE vsm.audiotimeline (\r\n"
-    			+ "    bl_id character varying(32) NOT NULL,\r\n"
-    			+ "    assetid character varying(32) NOT NULL,\r\n"
-    			+ "    offsetms integer,\r\n"
-    			+ "    volume number(4,2),\r\n"
-    			+ "    loop boolean DEFAULT false,\r\n"
-    			+ "    stop character varying(32),\r\n"
-				+ "    CONSTRAINT audiotimeline_pk PRIMARY KEY (bl_id, assetid),\r\n"
-    			+ "    CONSTRAINT audiotimeline_block_fk FOREIGN KEY (bl_id)\r\n"
-    			+ "            REFERENCES vsm.block (id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    	String insertAudioTimeLine = "INSERT INTO vsm.audiotimeline VALUES (?, ?, ?, ?, ?, ?)";
-    	
-
-    	String createChoice = "CREATE TABLE vsm.choice (\r\n"
-    			+ "    bl_id character varying(32) NOT NULL,\r\n"
-    			+ "    id character varying(32) NOT NULL,\r\n"
-    			+ "    text character varying(1024),\r\n"
-    			+ "    dloyalty integer,\r\n"
-    			+ "    dsafery integer,\r\n"
-    			+ "    CONSTRAINT choice_pk PRIMARY KEY (bl_id, id),\r\n"
-    			+ "    CONSTRAINT choice_block_fk FOREIGN KEY (bl_id)\r\n"
-    			+ "            REFERENCES vsm.block (id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    			
-    	String insertChoice = "INSERT INTO vsm.choice VALUES (?, ?, ?, ?, ?)";
-    	
-    	String createSetflag = "CREATE TABLE vsm.setflag (\r\n"
-    			+ "    bl_id character varying(32) NOT NULL,\r\n"
-    			+ "    ch_id character varying(32) NOT NULL,\r\n"
-    			+ "    flag character varying(32) NOT NULL,\r\n"
-				+ "    CONSTRAINT setflag_pk PRIMARY KEY (bl_id, ch_id, flag),\r\n"
-    			+ "    CONSTRAINT setflag_choice_fk FOREIGN KEY (bl_id, ch_id)\r\n"
-    			+ "            REFERENCES vsm.choice (bl_id, id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    	String insertSetflag = "INSERT INTO vsm.setflag VALUES (?, ?, ?)";
-
-    	String createRun = "CREATE TABLE vsm.run (\r\n"
-    			+ "    id character varying(32) NOT NULL,\r\n"
-    			+ "    title character varying(32) NOT NULL,\r\n"
-    			+ "    submission boolean DEFAULT false,\r\n"
-    			+ "    jurypool boolean DEFAULT false,\r\n"
-    			+ "    startnode character varying(32),\r\n"
-				+ "    CONSTRAINT run_pk PRIMARY KEY (id))";
-    	String insertRun = "INSERT INTO vsm.run VALUES (?, ?, ?, ?, ?)";
-
-    	String createNode = "CREATE TABLE vsm.node (\r\n"
-    			+ "    rn_id character varying(32) NOT NULL,\r\n"
-    			+ "    id character varying(32) NOT NULL,\r\n"
-    			+ "    template character varying(32) NOT NULL,\r\n"
-				+ "    CONSTRAINT node_pk PRIMARY KEY (rn_id, id),"
-    			+ "    CONSTRAINT node_run_fk FOREIGN KEY (rn_id)\r\n"
-    			+ "            REFERENCES vsm.run (id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    	String insertNode = "INSERT INTO vsm.node VALUES (?, ?, ?)";
-    	
-    	String createNext = "CREATE TABLE vsm.next (\r\n"
-    			+ "    rn_id character varying(32) NOT NULL,\r\n"
-    			+ "    nd_id character varying(32) NOT NULL,\r\n"
-    			+ "    choice character varying(32) NOT NULL,\r\n"
-    			+ "    next character varying(32),\r\n"
-				+ "    CONSTRAINT next_pk PRIMARY KEY (rn_id, nd_id, choice),"
-    			+ "    CONSTRAINT next_node_fk FOREIGN KEY (rn_id, nd_id)\r\n"
-    			+ "            REFERENCES vsm.node (rn_id, id)\r\n"
-    			+ "            ON UPDATE NO ACTION\r\n"
-    			+ "            ON DELETE NO ACTION)";
-    	String insertNext = "INSERT INTO vsm.next VALUES (?, ?, ?, ?)";
     	
     	
     	Map<String, Object> timer = (Map) map.get("timer");
