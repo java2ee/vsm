@@ -121,7 +121,7 @@
 		<role-name>examiner</role-name>
       </auth-constraint>
 	</security-constraint>
-
+<!-- 
     <security-constraint>
       <web-resource-collection>
 		<web-resource-name>REST API ведения БД</web-resource-name>
@@ -131,7 +131,7 @@
 		<role-name>admin</role-name>
       </auth-constraint>
 	</security-constraint>
-
+ -->
 	<security-role>
 	  <description>
 		Роль доступа к REST сервисам смежных систем

@@ -1,7 +1,5 @@
 CREATE TABLE vsm.choice (
-    mnemo             varchar(12) NOT NULL,
-    step              varchar(12) NOT NULL,
-    choice            varchar(12) NOT NULL,
+    mnemo             varchar(32) NOT NULL,
     next_step         varchar(12) NOT NULL,
     body              text NOT NULL,
     d_loyalty         smallint NOT NULL,

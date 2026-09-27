@@ -58,8 +58,7 @@ public class UserService extends RestService {
 		return null;
 	}
 
-	
-	@Operation(summary = "Загрузка данных любых данных их смежных систем",
+	@Operation(summary = "Загрузка данных их смежных систем",
 			responses = {
             		@ApiResponse(responseCode = "204", description = "${http.204}"), 
     				@ApiResponse(responseCode = "401", description = "${http.401}"),
