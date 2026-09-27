@@ -1,3 +1,5 @@
+-- Для H2 удалить MATCH FULL в описании вторичных ключей. H2 не поддерживает эту конструкцию  
+
 CREATE TABLE vsm.block (
     id character varying(32) NOT NULL,
     title character varying(32),
